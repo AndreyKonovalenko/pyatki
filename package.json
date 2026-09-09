@@ -4,9 +4,29 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node src/main.ts",
+    "format-fix": "prettier . --write"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "0.27.2",
+    "axios-cookiejar-support": "7.0.0",
+    "dotenv": "^17.4.2",
+    "tough-cookie": "5.0.0",
+    "tough-cookie-file-store": "^3.3.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.23.13",
+    "typescript": "^5.5.0",
+    "typescript-eslint": "^8.70.0"
+  },
+  "overrides": {
+    "tough-cookie": "5.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^10.10.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.6"
+  }
 }

@@ -28,3 +28,20 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# ============================================
+# STORAGE - Keep structure, ignore content
+# ============================================
+# Ignore the entire storage directory but keep the folder structure
+storage/**/*.json
+storage/**/*.cookie
+storage/**/*.session
+!storage/cookies/.gitkeep
+!storage/logs/.gitkeep
+!storage/cache/.gitkeep
+!storage/temp/.gitkeep
+
+# Or just ignore specific cookie files
+storage/cookies/session.json
+storage/cookies/*.bak
+storage/cookies/*.backup
+
