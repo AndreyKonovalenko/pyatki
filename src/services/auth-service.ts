@@ -3,15 +3,20 @@ import { wrapper } from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
 import FileCookieStore from 'tough-cookie-file-store';
 import { validEnv } from '../utils/utils';
+import { checkCookies } from '../utils/cookie-validator';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
 
 dotenv.config();
 
-const COOKIE_FILE_PATH = 'storage/cookies/session.json';
+const COOKIE_FILE_PATH = path.join(process.cwd(), 'storage', 'cookies', 'session.json');
 const BASE_URL = validEnv(process.env.BASE_URL);
 const LOGIN = validEnv(process.env.LOGIN);
+const CHECK_BALANCE = validEnv(process.env.CHECK_BALANCE)
 const USERNAME = validEnv(process.env.USERNAME);
 const PASSWORD = validEnv(process.env.PASSWORD);
+const TOKEN_NAME = validEnv(process.env.TOKEN_NAME)
 
 declare module 'axios' {
   export interface AxiosRequestConfig {
@@ -19,14 +24,17 @@ declare module 'axios' {
   }
 }
 
-export class AuthServiece {
+export class AuthService {
   private api: AxiosInstance;
   private cookieJar: CookieJar;
   private isAuthenticated = false;
   private authPromise: Promise<void> | null = null;
 
   constructor(baseURL: string = BASE_URL) {
-    this.cookieJar = new CookieJar();
+    fs.mkdirSync(path.dirname(COOKIE_FILE_PATH), { recursive: true });
+    const fileStore = new FileCookieStore(COOKIE_FILE_PATH);
+    this.cookieJar = new CookieJar(fileStore);
+
     this.api = wrapper(axios).create({
       baseURL,
       jar: this.cookieJar,
@@ -46,8 +54,9 @@ export class AuthServiece {
         const originalRequest = error.config;
 
         if (error.response?.status === 403 && !originalRequest?._retry) {
-          console.log('🔄 Session expired. Refreshing authentication...');
+          console.log('🔄 Session expired. Re authenticating...');
           this.isAuthenticated = false;
+          this.clearCookieFile();
           await this.authenticate();
 
           if (originalRequest) {
@@ -59,72 +68,123 @@ export class AuthServiece {
       },
     );
   }
+
+  // Cookie File Helpers
+
+  private cookieFileExists(): boolean {
+    return fs.existsSync(COOKIE_FILE_PATH)
+  }
+
+  private clearCookieFile(): void{
+    try {
+      this.cookieJar.removeAllCookiesSync();
+      if(this.cookieFileExists()){
+          fs.unlinkSync(COOKIE_FILE_PATH);
+          console.log('🗑️ Cookie file cleared')
+      }
+    } catch (error) {
+      console.error('Failed to clear cookies:', error);
+    } 
+  }  
+
+  // ✅ Just one line now
+  private async hasValidCookies(): Promise<boolean> {
+    return checkCookies({
+      cookieFile: COOKIE_FILE_PATH,
+      baseURL: BASE_URL,
+      cookieJar: this.cookieJar,
+      api: this.api,
+      testUrl: CHECK_BALANCE,
+      tokenName: TOKEN_NAME,
+    });
+  }
+
+
   async authenticate(): Promise<void> {
-    // Already authenticated
-    if (this.isAuthenticated) {
+    // Already authenticatd 
+    if (this.isAuthenticated) return
+    if (this.authPromise) return this.authPromise
+
+    if (await this.hasValidCookies()){
+      this.isAuthenticated = true;
+      console.log('✅ Using stored session');
       return;
     }
 
-    // If no auth in progress, start one
-    if (!this.authPromise) {
-      this.authPromise = this.login();
+    if (this.cookieFileExists()){
+      this.clearCookieFile()
     }
 
-    // ✅ Store reference to avoid null issues
-    const currentPromise = this.authPromise;
-
+    this.authPromise = this.login()
     try {
-      await currentPromise;
-    } catch (error) {
-      // Clear promise on error so we can retry
-      this.authPromise = null;
-      this.isAuthenticated = false;
-      throw error;
-    } finally {
-      // Only clear if it's still the same promise
-      if (this.authPromise === currentPromise) {
-        this.authPromise = null;
-      }
+      await this.authPromise;
+    }finally {
+      this.authPromise = null
     }
+
   }
 
   private async login(): Promise<void> {
     const UserName = USERNAME;
     const Password = PASSWORD;
     console.log('🔐 Authenticating...');
+    if (!UserName || !Password) {
+      throw new Error('Missing credentials. Set MYSELDON_USERNAME and MYSELDON_PASSWORD');
+    }
+    console.log('🔐 Logging in...');
     const response = await this.api.post(LOGIN, { UserName, Password });
-
-    if (response.data?.staus?.methodStatus === 'Success') {
-      this.isAuthenticated = true;
-      console.log('✅Authentication successful!');
-
-      const cookies = await this.cookieJar.getCookies(BASE_URL);
-      if (cookies.length > 0) {
-        console.log(`🍪 ${cookies.length} cookies stored`);
-      }
-    } else {
+    if (response.data?.status?.methodStatus !== 'Success') {
       throw new Error('Login failed: ' + JSON.stringify(response.data));
     }
+    this. isAuthenticated = true
+      console.log('✅Authentication successful!');
+      console.log(`💾 Cookies automatically saved to ${COOKIE_FILE_PATH}`);
   }
+
+  async get<T = any>(url: string, cfg?: AxiosRequestConfig): Promise<T> {
+    await this.authenticate();
+    return (await this.api.get<T>(url, cfg)).data;
+  }
+
+  async post<T = any>(url: string, data?: any, cfg?: AxiosRequestConfig): Promise<T> {
+    await this.authenticate();
+    return (await this.api.post<T>(url, data, cfg)).data;
+  }
+
+  async put<T = any>(url: string, data?: any, cfg?: AxiosRequestConfig): Promise<T> {
+    await this.authenticate();
+    return (await this.api.put<T>(url, data, cfg)).data;
+  }
+
+  async delete<T = any>(url: string, cfg?: AxiosRequestConfig): Promise<T> {
+    await this.authenticate();
+    return (await this.api.delete<T>(url, cfg)).data;
+  }
+
+  async reauthenticate(): Promise<void> {
+    this.isAuthenticated = false;
+    this.authPromise = null;
+    this.clearCookieFile();
+    await this.authenticate();
+  }
+
+  logout(): void {
+    this.isAuthenticated = false;
+    this.authPromise = null;
+    this.clearCookieFile();
+    console.log('🔓 Logged out');
+  }
+
+  getAxiosInstance(): AxiosInstance {
+    return this.api;
+  }
+
+  async getCookies(): Promise<any[]> {
+    // ✅ Use config.baseURL directly
+    return await this.cookieJar.getCookies(BASE_URL);
+  }
+
 }
 
-// const jar = new CookieJar();
-// const api = wrapper(axios ).create({
-//   baseURL: validEnv(process.env.BASE_URL),
-//   jar,
-//   withCredentials: true,
-//   headers: {'Content-Type': 'application/json'}
-// });
+export const authService = new AuthService();
 
-// let authenticated = false;
-
-// async function isAuth() {
-//   if (authenticated) return;
-//   await api.post(validEnv(process.env.LOGIN),{
-//     UserName: validEnv(process.env.USERNAME),
-//     Password: validEnv(process.env.PASSWORD)
-//   })
-//   authenticated = true;
-//   console.log('✅ Authenticated');
-
-// }
