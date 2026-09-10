@@ -10,7 +10,7 @@ async function main() {
 
   console.log('Getting company card');
   const card = await authService.get(GET_COMPANY_CARD, {
-    params: { inn: 7725235806 },
+    params: { inn:  },
   });
   console.log('Company card:', card.company_card);
 }
