@@ -11,4 +11,6 @@ export const METHOD_ENDPOINTS: Record<string, string> = {
   get_company_suppliers_blacklist: endpoints.get_company_suppliers_blacklist,
 };
 
+
+
 export const METHODS_WITHOUT_INN = ['check_balance'];
