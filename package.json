@@ -4,7 +4,11 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "start": "ts-node src/main.ts",
+    "start": "tsx src/main.ts",
+    "balance": "tsx src/main.ts --method=check_balance",
+    "card": "tsx src/main.ts --method=get_company_card",
+    "courts": "tsx src/main.ts --method=get_company_court_cases",
+    "owners": "tsx src/main.ts --method=get_company_owners",
     "format-fix": "prettier . --write"
   },
   "keywords": [],

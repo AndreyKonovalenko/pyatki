@@ -2,21 +2,16 @@ import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from 'axios';
 import { wrapper } from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
 import FileCookieStore from 'tough-cookie-file-store';
-import { validEnv } from '../utils/utils';
 import { checkCookies } from '../utils/cookie-validator';
-import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 
-dotenv.config();
+import config from '../config';
+
+const {auth, endpoints} = config;
 
 const COOKIE_FILE_PATH = path.join(process.cwd(), 'storage', 'cookies', 'session.json');
-const BASE_URL = validEnv(process.env.BASE_URL);
-const LOGIN = validEnv(process.env.LOGIN);
-const CHECK_BALANCE = validEnv(process.env.CHECK_BALANCE)
-const USERNAME = validEnv(process.env.USERNAME);
-const PASSWORD = validEnv(process.env.PASSWORD);
-const TOKEN_NAME = validEnv(process.env.TOKEN_NAME)
+
 
 declare module 'axios' {
   export interface AxiosRequestConfig {
@@ -30,7 +25,7 @@ export class AuthService {
   private isAuthenticated = false;
   private authPromise: Promise<void> | null = null;
 
-  constructor(baseURL: string = BASE_URL) {
+  constructor(baseURL: string = endpoints.baseURL) {
     fs.mkdirSync(path.dirname(COOKIE_FILE_PATH), { recursive: true });
     const fileStore = new FileCookieStore(COOKIE_FILE_PATH);
     this.cookieJar = new CookieJar(fileStore);
@@ -91,11 +86,11 @@ export class AuthService {
   private async hasValidCookies(): Promise<boolean> {
     return checkCookies({
       cookieFile: COOKIE_FILE_PATH,
-      baseURL: BASE_URL,
+      baseURL: endpoints.baseURL,
       cookieJar: this.cookieJar,
       api: this.api,
-      testUrl: CHECK_BALANCE,
-      tokenName: TOKEN_NAME,
+      testUrl: endpoints.check_balance,
+      tokenName: auth.tokenName,
     });
   }
 
@@ -125,14 +120,14 @@ export class AuthService {
   }
 
   private async login(): Promise<void> {
-    const UserName = USERNAME;
-    const Password = PASSWORD;
+    const UserName = auth.username;
+    const Password = auth.password;
     console.log('🔐 Authenticating...');
     if (!UserName || !Password) {
       throw new Error('Missing credentials. Set MYSELDON_USERNAME and MYSELDON_PASSWORD');
     }
     console.log('🔐 Logging in...');
-    const response = await this.api.post(LOGIN, { UserName, Password });
+    const response = await this.api.post(endpoints.login, { UserName, Password });
     if (response.data?.status?.methodStatus !== 'Success') {
       throw new Error('Login failed: ' + JSON.stringify(response.data));
     }
@@ -181,7 +176,7 @@ export class AuthService {
 
   async getCookies(): Promise<any[]> {
     // ✅ Use config.baseURL directly
-    return await this.cookieJar.getCookies(BASE_URL);
+    return await this.cookieJar.getCookies(endpoints.baseURL);
   }
 
 }

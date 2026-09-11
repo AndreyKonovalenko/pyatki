@@ -11,3 +11,8 @@ export function validEnv(
   }
   return name;
 }
+
+export function isValidInn(value: string): boolean {
+  const INN_PATTERN = /^\d{10}$|^\d{12}$/;
+  return INN_PATTERN.test(value) 
+}

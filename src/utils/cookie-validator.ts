@@ -48,11 +48,11 @@ export async function checkCookies(params: ValidateParams): Promise<boolean> {
     return false;
   }
   console.log('✅ [CASE 3] Cookies found:');
-  cookies.forEach(c =>
-    console.log(
-      `     • ${c.key}@${c.domain} expires=${c.expires || 'session'}`,
-    ),
-  );
+  // cookies.forEach(c =>
+  //   console.log(
+  //     `     • ${c.key}@${c.domain} expires=${c.expires || 'session'}`,
+  //   ),
+  // );
 
   // CASE 4: Cookies expired by date
   const now = new Date();
@@ -77,10 +77,10 @@ export async function checkCookies(params: ValidateParams): Promise<boolean> {
   const hasToken = cookies.some(c => c.key === tokenName);
   if (!hasToken) {
     console.log(`❌ [CASE 5] No ${tokenName} cookie found`);
-    console.log(
-      '   Available cookie keys:',
-      cookies.map(c => c.key).join(', '),
-    );
+    // console.log(
+    //   '   Available cookie keys:',
+    //   cookies.map(c => c.key).join(', '),
+    // );
     console.log('   → need to login again');
     return false;
   }
@@ -91,7 +91,7 @@ export async function checkCookies(params: ValidateParams): Promise<boolean> {
     console.log('🌐 [CASE 6] Testing cookies with server...');
     await api.get(testUrl);
     console.log('✅ [CASE 6] Server accepted cookies → SESSION VALID');
-    console.log('🔍 [hasValidCookies] END → return true\n');
+    console.log('🔍 [checkCookies] END → return true\n');
     return true;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -102,7 +102,7 @@ export async function checkCookies(params: ValidateParams): Promise<boolean> {
     } else {
       console.log('❌ [CASE 6] Unexpected error:', error);
     }
-    console.log('🔍 [hasValidCookies] END → return false\n');
+    console.log('🔍 [checkCookies] END → return false\n');
     return false;
   }
 }
