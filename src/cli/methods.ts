@@ -9,6 +9,7 @@ export const METHOD_ENDPOINTS: Record<string, string> = {
   get_company_owners: endpoints.get_company_owners,
   get_company_financial_report: endpoints.get_company_financial_report,
   get_company_suppliers_blacklist: endpoints.get_company_suppliers_blacklist,
+  get_entrepreneur_card: endpoints.get_entrepreneur_card
 };
 
 

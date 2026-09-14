@@ -85,24 +85,26 @@ export async function checkCookies(params: ValidateParams): Promise<boolean> {
     return false;
   }
   console.log(`✅ [CASE 5] ${tokenName} present`);
+  console.log('🔍 [checkCookies] END → return true\n');
+  return true;
 
   // CASE 6: Server rejects stored cookies
-  try {
-    console.log('🌐 [CASE 6] Testing cookies with server...');
-    await api.get(testUrl);
-    console.log('✅ [CASE 6] Server accepted cookies → SESSION VALID');
-    console.log('🔍 [checkCookies] END → return true\n');
-    return true;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log('❌ [CASE 6] Server rejected cookies');
-      console.log('   status:', error.response?.status);
-      console.log('   data:', JSON.stringify(error.response?.data));
-      console.log('   → cookies are stale, need to login');
-    } else {
-      console.log('❌ [CASE 6] Unexpected error:', error);
-    }
-    console.log('🔍 [checkCookies] END → return false\n');
-    return false;
-  }
+  // try {
+  //   console.log('🌐 [CASE 6] Testing cookies with server...');
+  //   await api.get(testUrl);
+  //   console.log('✅ [CASE 6] Server accepted cookies → SESSION VALID');
+  //   console.log('🔍 [checkCookies] END → return true\n');
+  //   return true;
+  // } catch (error) {
+  //   if (axios.isAxiosError(error)) {
+  //     console.log('❌ [CASE 6] Server rejected cookies');
+  //     console.log('   status:', error.response?.status);
+  //     console.log('   data:', JSON.stringify(error.response?.data));
+  //     console.log('   → cookies are stale, need to login');
+  //   } else {
+  //     console.log('❌ [CASE 6] Unexpected error:', error);
+  //   }
+  //   console.log('🔍 [checkCookies] END → return false\n');
+  //   return false;
+  // }
 }
