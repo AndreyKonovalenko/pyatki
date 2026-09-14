@@ -4,15 +4,19 @@ import { METHOD_ENDPOINTS } from './cli/methods';
 
 async function main() {
   try {
-    const { method, inn } = getCliArgs();
+    const { method, inn, year } = getCliArgs();
     const endpoint = METHOD_ENDPOINTS[method];
+    console.log(method, inn, year)
 
     console.log(`🔍 Calling ${method}${inn ? ` for INN ${inn}` : ''}...`);
 
     await authService.authenticate();
 
     const result = await authService.get(endpoint, {
-      params: inn ? { inn } : undefined,
+      params: {
+        ...(inn && { inn }),
+        ...(year && { year }),
+      } ,
     });
 
     console.log('✅ Result:', JSON.stringify(result, null, 2));

@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 import { validEnv } from './utils/utils';
 
 const envFound = dotenv.config({ path: '.env' });
-console.log(envFound)
 
 if (envFound.error) {
   throw new Error('no .env file found');

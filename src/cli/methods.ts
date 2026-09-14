@@ -15,3 +15,5 @@ export const METHOD_ENDPOINTS: Record<string, string> = {
 
 
 export const METHODS_WITHOUT_INN = ['check_balance'];
+
+export const METHODS_WITH_YEAR = ['get_company_financial_report'];
