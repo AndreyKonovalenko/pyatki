@@ -3,7 +3,8 @@ export function validEnv(
   variableName?: string,
 ): string {
   if (!name) {
-    throw new Error(variableName
+    throw new Error(
+      variableName
         ? `Missing evironment variable:${variableName}`
         : 'Missing required environment variable',
     );
@@ -13,5 +14,5 @@ export function validEnv(
 
 export function isValidInn(value: string): boolean {
   const INN_PATTERN = /^\d{10}$|^\d{12}$/;
-  return INN_PATTERN.test(value) 
+  return INN_PATTERN.test(value);
 }

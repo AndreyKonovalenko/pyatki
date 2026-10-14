@@ -1,5 +1,5 @@
-import config from "../config";
-const {endpoints}= config;
+import config from '../config';
+const { endpoints } = config;
 
 export const METHOD_ENDPOINTS: Record<string, string> = {
   check_balance: endpoints.check_balance,
@@ -9,10 +9,8 @@ export const METHOD_ENDPOINTS: Record<string, string> = {
   get_company_owners: endpoints.get_company_owners,
   get_company_financial_report: endpoints.get_company_financial_report,
   get_company_suppliers_blacklist: endpoints.get_company_suppliers_blacklist,
-  get_entrepreneur_card: endpoints.get_entrepreneur_card
+  get_entrepreneur_card: endpoints.get_entrepreneur_card,
 };
-
-
 
 export const METHODS_WITHOUT_INN = ['check_balance'];
 

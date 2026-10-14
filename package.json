@@ -9,8 +9,8 @@
     "card": "tsx src/main.ts --method=get_company_card",
     "courts": "tsx src/main.ts --method=get_company_court_cases",
     "owners": "tsx src/main.ts --method=get_company_owners",
-    "fin_report":"tsx src/main.ts --method=get_company_financial_report --year=2025",
-    "ip_card": "tsx src/main.ts --method=get_entrepreneur_card", 
+    "fin_report": "tsx src/main.ts --method=get_company_financial_report --year=2025",
+    "ip_card": "tsx src/main.ts --method=get_entrepreneur_card",
     "format-fix": "prettier . --write"
   },
   "keywords": [],
