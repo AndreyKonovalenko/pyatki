@@ -1,6 +1,10 @@
 import config from '../config';
 const { endpoints } = config;
 
+export const CUSTOM_METHODS = {
+  company_overview: 'company_overview',
+};
+
 export const METHOD_ENDPOINTS: Record<string, string> = {
   check_balance: endpoints.check_balance,
   get_company_card: endpoints.get_company_card,
@@ -12,6 +16,7 @@ export const METHOD_ENDPOINTS: Record<string, string> = {
   get_entrepreneur_card: endpoints.get_entrepreneur_card,
 };
 
-export const METHODS_WITHOUT_INN = ['check_balance'];
-
-export const METHODS_WITH_YEAR = ['get_company_financial_report'];
+export const ALL_METHODS = [
+  ...Object.keys(METHOD_ENDPOINTS),
+  ...Object.values(CUSTOM_METHODS),
+];
