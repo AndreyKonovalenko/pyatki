@@ -3,12 +3,13 @@ import { CliArgs } from '../domain/methods';
 import { parseCliArgs } from './cli-parser';
 import { METHOD_ENDPOINTS, CUSTOM_METHODS } from './methods';
 
+
 type Hander = (app: App, args: CliArgs) => Promise<void>;
 
 const handlers: Record<string, Hander> = {
-  [CUSTOM_METHODS.company_overview]: async (app, { inn, year }) => {
-    // const result = await app.companyOverview.run({inn, year});
-    // app.logger.info(JSON.stringify(XPathResult, null, 2))
+  [CUSTOM_METHODS.company_overview]: async (app, { inn }) => {
+    const result = await app.companyOverview.run(inn);
+    app.logger.info(JSON.stringify(result, null, 2))
   },
 };
 

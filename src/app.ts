@@ -6,6 +6,8 @@ import { ConsoleLogger } from './adapters/console-logger';
 import { SessionService } from './services/session.service';
 import { AuthService } from './services/auth.service';
 import { ApiService } from './services/api.service';
+import { CompanyService } from './services/company.service';
+import { CompanyOverviewUseCase } from './use-cases/company-overview.usecase';
 
 export function createApp() {
   const logger = new ConsoleLogger();
@@ -26,8 +28,8 @@ export function createApp() {
     password: config.auth.password,
   });
   const api = new ApiService(http, auth);
-  // const company = new CompanyService(http)
-  // const companyOverview = new CompanyOverviewService(company, logger)
-  return { logger, store, http, session, auth, api };
+  const company = new CompanyService(http)
+  const companyOverview = new CompanyOverviewUseCase(company, logger)
+  return { logger, store, http, session, auth, api, companyOverview };
 }
 export type App = ReturnType<typeof createApp>;
