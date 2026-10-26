@@ -27,7 +27,7 @@ export interface CompanyCardDto {
   okved_list?: OkvedDto[] | null;
   okved_list_2?: Okved2Dto[] | null;
   trustworthinessIndex?: FinancialIndexDto | null;
-  finacialStabilityIndex?: FinancialIndexDto | null;
+  financialStabilityIndex?: FinancialIndexDto | null;
   creditworthinessIndex?: FinancialIndexDto | null;
   badSupplier?: number | null;
   adress_tree?: AddressTreeNodeDto[] | null;

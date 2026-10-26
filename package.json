@@ -3,9 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "main": "main.ts",
+  "bin": "src/main.ts",
+  "pkg": {
+    "scripts": [
+      "src/**/*.ts"
+    ],
+    "assets": [
+      "storage/cookies/*.json"
+    ]
+  },
   "scripts": {
     "start": "tsx src/main.ts",
     "balance": "tsx src/main.ts --method=check_balance",
+    "build": "tsc",
     "card": "tsx src/main.ts --method=get_company_card",
     "courts": "tsx src/main.ts --method=get_company_court_cases",
     "owners": "tsx src/main.ts --method=get_company_owners",

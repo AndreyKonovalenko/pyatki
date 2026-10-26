@@ -1,20 +1,25 @@
-import { Logger } from "../domain/prots"
-import { CompanyService } from "../services/company.service"
+import { Logger } from '../domain/prots';
+import { CompanyService } from '../services/company.service';
+
+export interface OverviewData {
+  shortName: string;
+  status: string;
+}
 
 export class CompanyOverviewUseCase {
-  constructor (
+  constructor(
     private company: CompanyService,
     private logger: Logger,
-  ){}
+  ) {}
 
-  async run(inn: string ):Promise<string> {
-    this.logger.info(`🔍 Scoring company ${inn}...`)
+  async run(inn: string): Promise<OverviewData> {
+    this.logger.info(`🔍 Scoring company ${inn}...`);
 
-    const [card] = await Promise.all([
-      this.company.getCard(inn)
-    ])
+    const [card] = await Promise.all([this.company.getCard(inn)]);
 
-    return `${card.shortName} ${card.inn} ${card.status.label}`
-
+    return {
+      shortName: card.shortName,
+      status: card.status.label,
+    };
   }
 }

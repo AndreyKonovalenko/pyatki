@@ -28,8 +28,8 @@ export function createApp() {
     password: config.auth.password,
   });
   const api = new ApiService(http, auth);
-  const company = new CompanyService(http)
-  const companyOverview = new CompanyOverviewUseCase(company, logger)
+  const company = new CompanyService(http);
+  const companyOverview = new CompanyOverviewUseCase(company, logger);
   return { logger, store, http, session, auth, api, companyOverview };
 }
 export type App = ReturnType<typeof createApp>;
