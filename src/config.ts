@@ -48,5 +48,13 @@ export default {
       process.env.GET_ENTERPRENEUR_CARD,
       'GET_ENTERPRENEUR_CARD',
     ),
+    batch: {
+      inputFilePath: validEnv(process.env.INPUT_FILE_PATH, 'INPUT_FILE_PATH'),
+      outputFilePath: validEnv(
+        process.env.OUTPUT_FILE_PATH,
+        'OUTPUT_FILE_PATH',
+      ),
+      concurrency: Number(process.env.BATH_CONCURRENCY ?? 5),
+    },
   },
 };

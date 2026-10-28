@@ -3,6 +3,7 @@ const { endpoints } = config;
 
 export const CUSTOM_METHODS = {
   company_overview: 'company_overview',
+  batch_overview: 'batch_overview',
 };
 
 export const METHOD_ENDPOINTS: Record<string, string> = {

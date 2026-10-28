@@ -1,9 +1,6 @@
 import fs from 'fs';
 import type { Logger } from '../domain/prots';
-import {
-  CompanyOverviewUseCase,
-  OverviewData,
-} from './company-overview.usecase';
+import { CompanyOverviewUseCase } from './company-overview.usecase';
 import { inputFileReader } from '../utils/input-file-reader';
 
 import { mapWithLimit } from '../utils/concurrency';

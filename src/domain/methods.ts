@@ -1,6 +1,6 @@
 export interface CliArgs {
   method: string;
-  inn: string;
+  inns: string[];
   year: string;
 }
 
@@ -26,14 +26,25 @@ export function needsYear(method: string): boolean {
 }
 
 export function validateArgs(args: CliArgs, knownMethods: string[]): void {
+  // Method must be known
   if (!knownMethods.includes(args.method)) {
     throw new Error(
       `Unknown method: "${args.method}"\nAvailable: ${knownMethods.join(', \n')}`,
     );
   }
-  if (needsInn(args.method) && !isValidInn(args.inn)) {
-    throw new Error(`Invalid INN: "${args.inn}" — must be 10 or 12 digits`);
+
+  // Methods that requier INN should have at least one INN
+  if (needsInn(args.method) && args.inns.length === 0) {
+    throw new Error(`Method "${args.method}" requiers at least one --inn`);
   }
+
+  // Every INN must be valid
+  for (const inn of args.inns) {
+    if (!isValidInn(inn)) {
+      throw new Error(`Invalid INN: "${args.inns}" — must be 10 or 12 digits`);
+    }
+  }
+
   if (needsYear(args.method) && !isValidYear(args.year)) {
     throw new Error(
       `Invalid Year: "${args.year}" — must be 4 digits starting with 19 or 20`,

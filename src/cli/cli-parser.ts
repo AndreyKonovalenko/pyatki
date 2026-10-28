@@ -8,17 +8,36 @@ export function parseCliArgs(argv: string[]): CliArgs {
   };
 
   const method = get('--method=');
-  const inn = get('--inn=');
-  const year = get('--year=');
-
   if (!method) {
     throw new Error(
       `Missing --method=<name>\nAvailabe: ${ALL_METHODS.join(', \n')}`,
     );
   }
 
+  const inns = parseInnList(get('--inn='));
+  const year = get('--year=');
+
   console.log(ALL_METHODS);
-  const args: CliArgs = { method, inn, year };
+
+  const args: CliArgs = { method, inns, year };
   validateArgs(args, ALL_METHODS);
   return args;
+}
+
+/**
+ * Accepts:
+ *   --inn=7700000000                     → ['7700000000']
+ *   --inn=7700000000,777000000           → ['7700000000', '777000000']
+ *   --inn=[7700000000, 777000000]        → ['7700000000', '777000000']
+ *   --inn=                               → []
+ *   (no --inn at all)                    → []
+ */
+
+function parseInnList(raw: string): string[] {
+  if (!raw) return [];
+  const cleaned = raw.replace(/^\[|\]$/g, '');
+  return cleaned
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
 }
