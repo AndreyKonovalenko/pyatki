@@ -30,6 +30,6 @@ export function createApp() {
   const api = new ApiService(http, auth);
   const company = new CompanyService(http);
   const companyOverview = new CompanyOverviewUseCase(company, logger);
-  return { logger, store, http, session, auth, api, companyOverview };
+  return { logger, store, http, session, auth, api, companyOverview, config };
 }
 export type App = ReturnType<typeof createApp>;
