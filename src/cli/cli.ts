@@ -49,15 +49,20 @@ const batchOvervew: Handler = async app => {
 
 const handlers: Record<string, Handler> = {
   [CUSTOM_METHODS.company_overview]: companyOvervew,
+  [CUSTOM_METHODS.batch_overview]: batchOvervew,
 };
 
 const callEndpoints: Handler = async (app, { method, inns, year }) => {
   const endpoint = METHOD_ENDPOINTS[method];
   if (inns.length > MAX_INNS_PER_CALL) {
-    `Too many INNs: ${inns.length}.` +
-      `Inns limit ${MAX_INNS_PER_CALL} for ${method} method exceeded`;
+    throw new Error(
+      `Too many INNs: ${inns.length}.` +
+        `Inns limit ${MAX_INNS_PER_CALL} for ${method} method exceeded`,
+    );
   }
-  for (const inn of inns) {
+
+  const targets: (string | null)[] = inns.length > 0 ? inns : [null];
+  for (const inn of targets) {
     const label = `INN ${inn}`;
     app.logger.info(`🔍 Calling ${method}${inn ? ` for INN ${inn}` : ''}...`);
     try {
