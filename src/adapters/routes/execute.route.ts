@@ -4,7 +4,7 @@ import type { RequestHandler } from "express";
 import { isValidInn } from "../../utils/utils";
 import { MAX_INNS_PER_CALL } from "../../domain/methods";
 
-interface ExecuteBody {
+interface ExecuteQuery {
   method?: string;
   inn?: string;
   year?: string;
@@ -12,9 +12,8 @@ interface ExecuteBody {
 
 export function executeRoute(app: App): RequestHandler {
     return async (req, res) => {
-    const { method, inn, year } = req.body as ExecuteBody;
-    console.log(req.body)
-
+    const { method, inn, year } = req.query as ExecuteQuery;
+  
     if (inn && !isValidInn(inn)) {
       return res.status(400).json({ error: 'Invalid INN' });
     }
@@ -34,37 +33,29 @@ export function executeRoute(app: App): RequestHandler {
           error: `Too many INNs: ${inns.length} > ${MAX_INNS_PER_CALL}`,
         });
         return;
-    }
+       }
 
-    try {
-      const results: Array<{
-        inn: string | null;
-        result?: unknown;
-        error?: string;
-      }> = [];
-      const targets: (string | null)[] = inns.length > 0 ? inns : [null];
+    const endpoint = METHOD_ENDPOINTS[method];
+    const targets: (string | null)[] = inns.length > 0 ? inns : [null];
+    const results: Array<{ inn: string | null; result?: unknown; error?: string }> = [];
 
-      for (const element of targets) {
-        try {
-          const result = await app.api.get(METHOD_ENDPOINTS[method], {
-            params: {
-              ...(element && { inn: element }),
-              ...(year && { year }),
-            },
-          });
-          results.push({ inn: element, result });
-        } catch (err) {
-          results.push({
-            inn: element,
-            error: err instanceof Error ? err.message : String(err),
-          });
-        }
+    for (const singleInn of targets) {
+      try {
+        const result = await app.api.get(endpoint, {
+          params: {
+            ...(singleInn && { inn: singleInn }),
+            ...(year && { year }),
+          },
+        });
+        results.push({ inn: singleInn, result });
+      } catch (err) {
+        results.push({
+          inn: singleInn,
+          error: err instanceof Error ? err.message : String(err),
+        });
       }
-      res.json({ method, results });
-    } catch (err) {
-      res.status(500).json({
-        error: err instanceof Error ? err.message : String(err),
-      });
     }
+    
+    res.status(200).json({method, results})
   }
 }
