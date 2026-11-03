@@ -4,6 +4,8 @@ export interface CliArgs {
   year: string;
 }
 
+export const MAX_INNS_PER_CALL = 5;
+
 export const METHODS_WITHOUT_INN: readonly string[] = [
   'check_balance',
   'batch_overview',

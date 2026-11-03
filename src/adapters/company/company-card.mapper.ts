@@ -40,7 +40,7 @@ export function toCompanyCard(res: CompanyCardResponseDto): CompanyCard {
     mainOkved: mainOkved(card.okved_list_2),
     ceo: getCeo(card),
     trustworthiness: card.trustworthinessIndex?.value ?? 0,
-    financialStability: card.finacialStabilityIndex?.value ?? 0,
+    financialStability: card.financialStabilityIndex?.value ?? 0,
     creditworthiness: card.creditworthinessIndex?.value ?? 0,
     phones: (card.contacts?.phones ?? []).map(toPhone),
     emails: (card.contacts?.emails ?? []).map(e => e.email ?? ''),

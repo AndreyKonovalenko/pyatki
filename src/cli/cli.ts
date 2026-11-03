@@ -1,11 +1,11 @@
 import type { App } from '../app';
-import { CliArgs } from '../domain/methods';
+import { CliArgs, MAX_INNS_PER_CALL } from '../domain/methods';
 import { runCompanyOverviewBatch } from '../use-cases/company-overview.batch';
 import { parseCliArgs } from './cli-parser';
-import { METHOD_ENDPOINTS, CUSTOM_METHODS } from './methods';
+
+import { METHOD_ENDPOINTS, CUSTOM_METHODS} from './methods';
 
 type Handler = (app: App, args: CliArgs) => Promise<void>;
-const MAX_INNS_PER_CALL = 5;
 
 const companyOvervew: Handler = async (app, { inns }) => {
   if (inns.length > MAX_INNS_PER_CALL) {
