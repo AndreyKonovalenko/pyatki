@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Pyatki</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <button id="toggle-form" class="toggle-btn" type="button">☰ Show form</button>
+
+    <aside id="form-drawer" class="drawer">
+      <header class="drawer-header">
+        <h2>Run</h2>
+        <button id="hide-form" class="hide-btn" type="button">✕ Hide</button>
+      </header>
+
+      <form id="run-form">
+        <label>
+          Method
+          <select id="method" required></select>
+        </label>
+
+        <label>
+          INN(s) <small>(comma-separated, empty for check_balance)</small>
+          <input id="inn" type="text" placeholder="" />
+        </label>
+
+        <label>
+          Year <small>(only for get_company_financial_report)</small>
+          <input id="year" type="text" placeholder="YYYY" />
+        </label>
+
+        <button type="submit">Run</button>
+      </form>
+    </aside>
+
+    <main id="main">
+      <h1>Pyatki</h1>
+      <pre id="output"></pre>
+    </main>
+
+    <script src="ui.js"></script>
+  </body>
+</html>

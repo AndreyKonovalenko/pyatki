@@ -49,7 +49,7 @@ const batchOvervew: Handler = async app => {
 
 const handlers: Record<string, Handler> = {
   [CUSTOM_METHODS.company_overview]: companyOvervew,
-  [CUSTOM_METHODS.batch_overview]: batchOvervew,
+  // [CUSTOM_METHODS.batch_overview]: batchOvervew,
 };
 
 const callEndpoints: Handler = async (app, { method, inns, year }) => {

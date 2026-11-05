@@ -7,10 +7,11 @@ if (envFound.error) {
   throw new Error('no .env file found');
 }
 
-// process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-
 export default {
-  nodeEnv: process.env.NODE_ENV,
+  server: {
+    host: validEnv(process.env.HOST) ?? '0.0.0.0',
+    port: Number(validEnv(process.env.PORT) ?? 3000),
+  },
   auth: {
     username: validEnv(process.env.USERNAME),
     password: validEnv(process.env.PASSWORD),
