@@ -1,7 +1,8 @@
-import type { App } from '../app';
-import { CliArgs, MAX_INNS_PER_CALL } from '../domain/methods';
+import type { App } from '../app/create-app';
+import { CliArgs, MAX_INNS_PER_CALL } from '../models/methods';
 import { runCompanyOverviewBatch } from '../use-cases/company-overview.batch';
 import { parseCliArgs } from './cli-parser';
+import { endpointsHandler } from '../adapters/handlers/endpoints.handler';
 
 import { METHOD_ENDPOINTS, CUSTOM_METHODS} from './methods';
 
@@ -52,40 +53,40 @@ const handlers: Record<string, Handler> = {
   // [CUSTOM_METHODS.batch_overview]: batchOvervew,
 };
 
-const callEndpoints: Handler = async (app, { method, inns, year }) => {
-  const endpoint = METHOD_ENDPOINTS[method];
-  if (inns.length > MAX_INNS_PER_CALL) {
-    throw new Error(
-      `Too many INNs: ${inns.length}.` +
-        `Inns limit ${MAX_INNS_PER_CALL} for ${method} method exceeded`,
-    );
-  }
+// const callEndpoints: Handler = async (app, { method, inns, year }) => {
+//   const endpoint = METHOD_ENDPOINTS[method];
+//   if (inns.length > MAX_INNS_PER_CALL) {
+//     throw new Error(
+//       `Too many INNs: ${inns.length}.` +
+//         `Inns limit ${MAX_INNS_PER_CALL} for ${method} method exceeded`,
+//     );
+//   }
 
-  const targets: (string | null)[] = inns.length > 0 ? inns : [null];
-  for (const inn of targets) {
-    const label = `INN ${inn}`;
-    app.logger.info(`🔍 Calling ${method}${inn ? ` for INN ${inn}` : ''}...`);
-    try {
-      const result = await app.api.get(endpoint, {
-        params: {
-          ...(inn && { inn }),
-          ...(year && { year }),
-        },
-      });
-      app.logger.info('✅ Result: ' + JSON.stringify(result, null, 2));
-    } catch (err) {
-      app.logger.error(
-        `❌ Error [${label}]: ` +
-          (err instanceof Error ? err.message : String(err)),
-      );
-    }
-  }
-};
+//   const targets: (string | null)[] = inns.length > 0 ? inns : [null];
+//   for (const inn of targets) {
+//     const label = `INN ${inn}`;
+//     app.logger.info(`🔍 Calling ${method}${inn ? ` for INN ${inn}` : ''}...`);
+//     try {
+//       const result = await app.api.get(endpoint, {
+//         params: {
+//           ...(inn && { inn }),
+//           ...(year && { year }),
+//         },
+//       });
+//       app.logger.info('✅ Result: ' + JSON.stringify(result, null, 2));
+//     } catch (err) {
+//       app.logger.error(
+//         `❌ Error [${label}]: ` +
+//           (err instanceof Error ? err.message : String(err)),
+//       );
+//     }
+//   }
+// };
 
 export async function runCli(argv: string[], app: App): Promise<number> {
   try {
     const args = parseCliArgs(argv);
-    const handler = handlers[args.method] ?? callEndpoints;
+    const handler = handlers[args.method] ?? endpointsHandler;
     await handler(app, args);
     return 0;
   } catch (err) {

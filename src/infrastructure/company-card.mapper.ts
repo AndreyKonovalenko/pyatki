@@ -13,7 +13,7 @@ import type {
   Ceo,
   Phone,
   CompanySatus,
-} from '../../domain/company';
+} from '../models/company.model';
 
 export function toCompanyCard(res: CompanyCardResponseDto): CompanyCard {
   const card = res.company_card;

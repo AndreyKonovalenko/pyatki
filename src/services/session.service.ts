@@ -1,5 +1,5 @@
-import type { CookieStore, Logger } from '../domain/prots';
-import { SessionCookie, isValidSession } from '../domain/session';
+import type { CookieStore, Logger } from '../models/ports';
+import { SessionCookie, isValidSession } from '../models/session.model';
 
 export class SessionService {
   constructor(

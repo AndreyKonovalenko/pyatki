@@ -1,5 +1,18 @@
 import dotenv from 'dotenv';
-import { validEnv } from './utils/utils';
+
+function validEnv(
+  name: string | undefined,
+  variableName?: string,
+): string {
+  if (!name) {
+    throw new Error(
+      variableName
+        ? `Missing evironment variable:${variableName}`
+        : 'Missing required environment variable',
+    );
+  }
+  return name;
+}
 
 const envFound = dotenv.config({ path: '.env' });
 
@@ -20,6 +33,7 @@ export default {
   endpoints: {
     baseURL: validEnv(process.env.BASE_URL),
     login: validEnv(process.env.LOGIN),
+    logout: validEnv(process.env.LOGOUT),
     check_balance: validEnv(process.env.CHECK_BALANCE, 'CHECK_BALANCE'),
     get_company_card: validEnv(
       process.env.GET_COMPANY_CARD,

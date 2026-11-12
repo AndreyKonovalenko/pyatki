@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { wrapper } from 'axios-cookiejar-support';
-import type { HttpCleint, RequestConfig, JsonBody } from '../domain/prots';
-import { HttpError } from '../domain/auth';
+import type { HttpCleint, RequestConfig, JsonBody } from '../models/ports';
+import { HttpError } from '../models/auth.model';
 import { ToughCookieStore } from './cookie-store';
 
 export class AxiosHttpClient implements HttpCleint {

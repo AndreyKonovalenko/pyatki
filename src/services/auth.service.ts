@@ -1,15 +1,13 @@
-import type { CookieStore, HttpCleint, Logger } from '../domain/prots';
+import type { CookieStore, HttpClient, Logger } from '../models/ports';
 import {
   AuthenticationError,
-  isLoginSuccessful,
-  LoginResponse,
-} from '../domain/auth';
+} from '../models/auth.model';
+import type { AuthApiClient } from '../infrastructure/auth-api.client';
 import { SessionService } from './session.service';
 
 export interface AuthConfig {
   baseURL: string;
   tokenName: string;
-  loginPath: string;
   username: string;
   password: string;
 }
@@ -18,7 +16,7 @@ export class AuthService {
   private isAuthenticated = false;
   private authPromise: Promise<void> | null = null;
   constructor(
-    private http: HttpCleint,
+    private authClient: AuthApiClient,
     private store: CookieStore,
     private session: SessionService,
     private logger: Logger,
@@ -50,18 +48,14 @@ export class AuthService {
   }
 
   async login(): Promise<void> {
-    const { username, password, loginPath } = this.cfg;
-    if (!username || !password) {
+    if (!this.cfg.username || !this.cfg.password) {
       throw new AuthenticationError('Misssing credentials');
     }
     this.logger.info('🔐 Logging in...');
-    const res = await this.http.post<LoginResponse>(loginPath, {
-      UserName: username,
-      Password: password,
-    });
-    if (!isLoginSuccessful(res)) {
-      throw new AuthenticationError('Login failed' + JSON.stringify(res));
-    }
+    await this.authClient.login({
+      username: this.cfg.username,
+      password: this.cfg.password
+    })
     this.isAuthenticated = true;
     this.logger.info('✅ Authentication successful');
   }

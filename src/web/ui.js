@@ -49,6 +49,8 @@ form.addEventListener('submit', async (e) => {
   runButton.disabled = true;
   output.textContent = '⏳ Running...';
 
+
+
   const params = new URLSearchParams({
     method: methodSelect.value,
     ...(innInput.value && {inn: innInput.value}),
@@ -56,7 +58,13 @@ form.addEventListener('submit', async (e) => {
   })
 
   try {
-    const res = await fetch(`/api/execute?${params.toString()}`);
+
+    // need to change route names to raw and custom
+    let route = 'api/execute';
+    if (methodSelect.value === 'company_overview'){
+      route = 'api/raw'
+    }
+    const res = await fetch(`${route}?${params.toString()}`);
     const data = await res.json();
 
     if (!res.ok) {

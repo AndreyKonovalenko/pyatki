@@ -1,4 +1,4 @@
-import { CliArgs, validateArgs } from '../domain/methods';
+import { CliArgs, validateArgs } from '../models/methods';
 import { ALL_METHODS } from './methods';
 
 export function parseCliArgs(argv: string[]): CliArgs {

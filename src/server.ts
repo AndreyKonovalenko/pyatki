@@ -1,5 +1,5 @@
 
-import { createApp } from './app';
+import { createApp } from './app/create-app';
 import { createExpressServer } from './adapters/express-server';
 
 const app = createApp();

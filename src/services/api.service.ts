@@ -1,10 +1,10 @@
-import { HttpError } from '../domain/auth';
-import type { HttpCleint, JsonBody, RequestConfig } from '../domain/prots';
+import { HttpError } from '../models/error';
+import type { HttpClient, JsonBody, RequestConfig } from '../models/ports';
 import { AuthService } from './auth.service';
 
 export class ApiService {
   constructor(
-    private http: HttpCleint,
+    private http: HttpClient,
     private auth: AuthService,
   ) {}
 

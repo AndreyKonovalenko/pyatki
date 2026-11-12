@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { CookieJar } from 'tough-cookie';
 import FileCookieStore from 'tough-cookie-file-store';
-import type { CookieStore } from '../domain/prots';
-import type { SessionCookie } from '../domain/session';
+import type { CookieStore } from '../models/ports';
+import type { SessionCookie } from '../models/session.model';
 
 export class ToughCookieStore implements CookieStore {
   private jar: CookieJar;

@@ -1,4 +1,4 @@
-import type { SessionCookie } from './session';
+import type { SessionCookie } from './session.model';
 
 export interface CookieStore {
   hasFile(): boolean;
@@ -11,7 +11,7 @@ export interface RequestConfig {
   headers?: Record<string, string>;
 }
 
-export interface HttpCleint {
+export interface HttpClient {
   get<T>(url: string, cfg?: RequestConfig): Promise<T>;
   post<T>(url: string, data?: unknown, cfg?: RequestConfig): Promise<T>;
 }

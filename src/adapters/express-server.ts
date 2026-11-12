@@ -1,6 +1,6 @@
 import express, { Express } from 'express'
 import path from 'path';
-import type { App } from '../app'
+import type { App } from '../app/create-app'
 import { executeRoute } from './routes/execute.route';
 import { methodsRoutes } from './routes/methods.route';
 

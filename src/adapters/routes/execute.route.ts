@@ -1,8 +1,8 @@
 import { METHOD_ENDPOINTS } from "../../cli/methods";
-import type { App } from "../../app";
+import type { App } from "../../app/create-app";
 import type { RequestHandler } from "express";
 import { isValidInn } from "../../utils/utils";
-import { MAX_INNS_PER_CALL } from "../../domain/methods";
+import { MAX_INNS_PER_CALL } from "../../models/methods";
 
 interface ExecuteQuery {
   method?: string;

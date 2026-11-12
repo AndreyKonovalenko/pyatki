@@ -1,4 +1,4 @@
-import { createApp } from './app';
+import { createApp } from './app/create-app';
 import { runCli } from './cli/cli';
 
 async function main() {

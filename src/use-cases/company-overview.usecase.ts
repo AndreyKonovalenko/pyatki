@@ -1,5 +1,5 @@
-import { Logger } from '../domain/prots';
-import { CompanyService } from '../services/company.service';
+import { Logger } from '../models/ports';
+import { CompanyService } from '../infrastructure/company/company-api.client';
 
 export interface OverviewData {
   shortName: string;

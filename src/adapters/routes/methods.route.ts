@@ -1,5 +1,5 @@
 import type { RequestHandler } from "express";
-import type { App } from "../../app";
+import type { App } from "../../app/create-app";
 import { ALL_METHODS } from "../../cli/methods";
 
 export function methodsRoutes(_app: App): RequestHandler {

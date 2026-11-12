@@ -1,4 +1,4 @@
-import type { Logger } from '../domain/prots';
+import type { Logger } from '../models/ports';
 
 export class ConsoleLogger implements Logger {
   debug(msg: string) {

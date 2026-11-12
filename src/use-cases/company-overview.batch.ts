@@ -1,9 +1,9 @@
 import fs from 'fs';
-import type { Logger } from '../domain/prots';
+import type { Logger } from '../models/ports';
 import { CompanyOverviewUseCase } from './company-overview.usecase';
-import { inputFileReader } from '../utils/input-file-reader';
+import { inputFileReader } from '../shared/input-file-reader';
 
-import { mapWithLimit } from '../utils/concurrency';
+import { mapWithLimit } from '../shared/concurrency';
 
 export interface OverviewRecord {
   inn: string;
