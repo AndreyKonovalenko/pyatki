@@ -1,6 +1,9 @@
-export interface CliArgs {
+import config from "../config";
+const {endpoints} = config;
+
+export interface QueryArgs {
   method: string;
-  inns: string[];
+  inn:  string;
   year: string;
 }
 
@@ -14,6 +17,34 @@ export const METHODS_WITH_YEAR: readonly string[] = [
   'get_company_financial_report',
 ];
 
+
+export const CUSTOM_METHODS = {
+  company_overview: 'company_overview',
+  // batch_overview: 'batch_overview',
+};
+
+export const METHOD_ENDPOINTS: Record<string, string> = {
+  check_balance: endpoints.check_balance,
+  get_company_card: endpoints.get_company_card,
+  get_company_court_cases: endpoints.get_company_court_cases,
+  get_company_bailiffs: endpoints.get_company_bailiffs,
+  get_company_owners: endpoints.get_company_owners,
+  get_company_financial_report: endpoints.get_company_financial_report,
+  get_company_suppliers_blacklist: endpoints.get_company_suppliers_blacklist,
+  get_entrepreneur_card: endpoints.get_entrepreneur_card,
+};
+
+export const ALL_METHODS = [
+  ...Object.keys(METHOD_ENDPOINTS),
+  ...Object.values(CUSTOM_METHODS),
+];
+
+export function parseInnList(inn:string | undefined):string[] {
+   return (inn ?? '')
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+} 
 export function isValidInn(inn: string): boolean {
   return /^\d{10}$|^\d{12}$/.test(inn);
 }
@@ -30,7 +61,8 @@ export function needsYear(method: string): boolean {
   return METHODS_WITH_YEAR.includes(method);
 }
 
-export function validateArgs(args: CliArgs, knownMethods: string[]): void {
+export function validateArgs(args: QueryArgs, knownMethods: string[]): void {
+  const inns = parseInnList(args.inn)
   // Method must be known
   if (!knownMethods.includes(args.method)) {
     throw new Error(
@@ -39,14 +71,14 @@ export function validateArgs(args: CliArgs, knownMethods: string[]): void {
   }
 
   // Methods that requier INN should have at least one INN
-  if (needsInn(args.method) && args.inns.length === 0) {
+  if (needsInn(args.method) && inns.length === 0) {
     throw new Error(`Method "${args.method}" requiers at least one --inn`);
   }
 
   // Every INN must be valid
-  for (const inn of args.inns) {
+  for (const inn of inns) {
     if (!isValidInn(inn)) {
-      throw new Error(`Invalid INN: "${args.inns}" — must be 10 or 12 digits`);
+      throw new Error(`Invalid INN: "${args.inn}" — must be 10 or 12 digits`);
     }
   }
 

@@ -1,10 +1,11 @@
 import axios, { AxiosInstance } from 'axios';
 import { wrapper } from 'axios-cookiejar-support';
-import type { HttpCleint, RequestConfig, JsonBody } from '../models/ports';
-import { HttpError } from '../models/auth.model';
-import { ToughCookieStore } from './cookie-store';
+import type { HttpClient, RequestConfig, JsonBody } from '../models/ports';
+import { HttpError } from '../models/error';
+import { ToughCookieStore } from './file-cookie-store';
 
-export class AxiosHttpClient implements HttpCleint {
+
+export class AxiosHttpClient implements HttpClient {
   private api: AxiosInstance;
 
   constructor(baseURL: string, cokiesStore: ToughCookieStore) {

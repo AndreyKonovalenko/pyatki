@@ -1,9 +1,10 @@
 
 import { createApp } from './app/create-app';
-import { createExpressServer } from './adapters/express-server';
+import { createExpressServer } from './entrypoints/express-server';
+import config from './config';
 
 const app = createApp();
-const {port, host} = app.config.server;
+const {port, host} = config.server;
 const server = createExpressServer(app);
 
 server.listen(port, host, () => {

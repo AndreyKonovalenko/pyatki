@@ -13,8 +13,8 @@
     ]
   },
   "scripts": {
-    "build": "tsc && npm run copy:web",
-    "copy:web": "node -e \"require('fs').cpSync('src/web', 'dist/web', { recursive: true })\"",
+    "build": "tsc && npm run copy:public",
+    "copy:web": "node -e \"require('fs').cpSync('public', 'dist/public', { recursive: true })\"",
     "dev:cli": "tsx src/main.ts",
     "dev:server": "tsx src/server.ts",
     "balance": "tsx src/main.ts --method=check_balance",
@@ -23,7 +23,8 @@
     "owners": "tsx src/main.ts --method=get_company_owners",
     "fin_report": "tsx src/main.ts --method=get_company_financial_report --year=2025",
     "ip_card": "tsx src/main.ts --method=get_entrepreneur_card",
-    "format-fix": "prettier . --write"
+    "format-fix": "prettier . --write",
+    "type-check": "npx tsc --noEmit"
   },
   "keywords": [],
   "author": "",

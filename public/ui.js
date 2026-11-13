@@ -60,10 +60,10 @@ form.addEventListener('submit', async (e) => {
   try {
 
     // need to change route names to raw and custom
-    let route = 'api/execute';
-    if (methodSelect.value === 'company_overview'){
-      route = 'api/raw'
-    }
+    let route = 'api/raw';
+    // if (methodSelect.value === 'company_overview'){
+    //   route = 'api/raw'
+    // }
     const res = await fetch(`${route}?${params.toString()}`);
     const data = await res.json();
 

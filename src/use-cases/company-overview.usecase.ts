@@ -1,5 +1,6 @@
 import { Logger } from '../models/ports';
-import { CompanyService } from '../infrastructure/company/company-api.client';
+
+import { CompanyApiClient } from '../infrastructure/company-api.client';
 
 export interface OverviewData {
   shortName: string;
@@ -8,7 +9,7 @@ export interface OverviewData {
 
 export class CompanyOverviewUseCase {
   constructor(
-    private company: CompanyService,
+    private company: CompanyApiClient,
     private logger: Logger,
   ) {}
 
