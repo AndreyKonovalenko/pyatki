@@ -1,7 +1,5 @@
 import type { CookieStore, HttpClient, Logger } from '../models/ports';
-import {
-  AuthenticationError,
-} from '../models/auth.model';
+import { AuthenticationError } from '../models/auth.model';
 import type { AuthApiClient } from '../infrastructure/auth-api.client';
 import { SessionService } from './session.service';
 
@@ -54,8 +52,8 @@ export class AuthService {
     this.logger.info('🔐 Logging in...');
     await this.authClient.login({
       username: this.cfg.username,
-      password: this.cfg.password
-    })
+      password: this.cfg.password,
+    });
     this.isAuthenticated = true;
     this.logger.info('✅ Authentication successful');
   }

@@ -44,23 +44,20 @@ async function loadMethods() {
 
 // ---------- run ----------
 
-form.addEventListener('submit', async (e) => {
+form.addEventListener('submit', async e => {
   e.preventDefault();
   runButton.disabled = true;
   output.textContent = '⏳ Running...';
 
-
-
   const params = new URLSearchParams({
     method: methodSelect.value,
-    ...(innInput.value && {inn: innInput.value}),
-    ...(yearInput.value && {inn: yearInput.value})
-  })
+    ...(innInput.value && { inn: innInput.value }),
+    ...(yearInput.value && { inn: yearInput.value }),
+  });
 
   try {
-
     // need to change route names to raw and custom
-    let route = 'api/raw';
+    let route = 'api/';
     // if (methodSelect.value === 'company_overview'){
     //   route = 'api/raw'
     // }

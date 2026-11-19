@@ -4,7 +4,6 @@ import type { HttpClient, RequestConfig, JsonBody } from '../models/ports';
 import { HttpError } from '../models/error';
 import { ToughCookieStore } from './file-cookie-store';
 
-
 export class AxiosHttpClient implements HttpClient {
   private api: AxiosInstance;
 

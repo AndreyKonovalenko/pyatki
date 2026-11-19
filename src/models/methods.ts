@@ -1,9 +1,9 @@
-import config from "../config";
-const {endpoints} = config;
+import config from '../config';
+const { endpoints } = config;
 
 export interface QueryArgs {
   method: string;
-  inn:  string;
+  inn: string;
   year: string;
 }
 
@@ -17,10 +17,9 @@ export const METHODS_WITH_YEAR: readonly string[] = [
   'get_company_financial_report',
 ];
 
-
 export const CUSTOM_METHODS = {
   company_overview: 'company_overview',
-  // batch_overview: 'batch_overview',
+  batch_overview: 'batch_overview',
 };
 
 export const METHOD_ENDPOINTS: Record<string, string> = {
@@ -39,12 +38,16 @@ export const ALL_METHODS = [
   ...Object.values(CUSTOM_METHODS),
 ];
 
-export function parseInnList(inn:string | undefined):string[] {
-   return (inn ?? '')
-      .split(',')
-      .map(s => s.trim())
-      .filter(Boolean);
-} 
+export function isCustomMethod(method: string): boolean {
+  return Object.values(CUSTOM_METHODS).includes(method);
+}
+
+export function parseInnList(inn: string | undefined): string[] {
+  return (inn ?? '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+}
 export function isValidInn(inn: string): boolean {
   return /^\d{10}$|^\d{12}$/.test(inn);
 }
@@ -62,7 +65,7 @@ export function needsYear(method: string): boolean {
 }
 
 export function validateArgs(args: QueryArgs, knownMethods: string[]): void {
-  const inns = parseInnList(args.inn)
+  const inns = parseInnList(args.inn);
   // Method must be known
   if (!knownMethods.includes(args.method)) {
     throw new Error(

@@ -1,9 +1,6 @@
 import dotenv from 'dotenv';
 
-function validEnv(
-  name: string | undefined,
-  variableName?: string,
-): string {
+function validEnv(name: string | undefined, variableName?: string): string {
   if (!name) {
     throw new Error(
       variableName

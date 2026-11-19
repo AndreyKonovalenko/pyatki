@@ -1,10 +1,9 @@
-import type { HttpClient } from "../models/ports";
-import { AuthenticationError, type Credentials  } from "../models/auth.model";
+import type { HttpClient } from '../models/ports';
+import { AuthenticationError, type Credentials } from '../models/auth.model';
 
-
-interface LoginRequestDto{
-  UserName:string,
-  Password: string
+interface LoginRequestDto {
+  UserName: string;
+  Password: string;
 }
 
 export interface LoginResponse {
@@ -16,27 +15,33 @@ export function isLoginSuccessful(res: LoginResponse): boolean {
 }
 
 export interface AuthApiConfig {
-  loginPath: string,
-  logoutPath: string
+  loginPath: string;
+  logoutPath: string;
 }
 
-function toLoginRequest(credentials: Credentials): LoginRequestDto{
+function toLoginRequest(credentials: Credentials): LoginRequestDto {
   return {
     UserName: credentials.username,
-    Password: credentials.password
-  }
+    Password: credentials.password,
+  };
 }
 
 export class AuthApiClient {
-  constructor(private http: HttpClient, private cfg: AuthApiConfig) {}
+  constructor(
+    private http: HttpClient,
+    private cfg: AuthApiConfig,
+  ) {}
 
   async login(credentials: Credentials): Promise<void> {
-    const res = await this.http.post<LoginResponse>(this.cfg.loginPath, toLoginRequest(credentials))
-    if( isLoginSuccessful(res)){
-      throw new AuthenticationError('Login faild' + JSON.stringify(res))
+    const res = await this.http.post<LoginResponse>(
+      this.cfg.loginPath,
+      toLoginRequest(credentials),
+    );
+    if (isLoginSuccessful(res)) {
+      throw new AuthenticationError('Login faild' + JSON.stringify(res));
     }
   }
-  async logout():Promise<void> {
-    await this.http.post(this.cfg.logoutPath)
-  } 
+  async logout(): Promise<void> {
+    await this.http.post(this.cfg.logoutPath);
+  }
 }

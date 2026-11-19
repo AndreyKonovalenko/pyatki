@@ -1,99 +1,43 @@
-// import type { App } from '../app/create-app';
-// import { CliArgs, MAX_INNS_PER_CALL } from '../models/methods';
-// import { runCompanyOverviewBatch } from '../use-cases/company-overview.batch';
-// import { parseCliArgs } from './cli-parser';
-// import { endpointsHandler } from '../adapters/handlers/endpoints.handler';
+import type { App } from '../app/create-app';
+import { isCustomMethod, QueryArgs } from '../models/methods';
+import { customMethodsController } from '../controllers/custom-methods.controller';
+import { rawMethodsController } from '../controllers/raw-methods.controller';
+import { ALL_METHODS } from '../models/methods';
+import { validateArgs } from '../models/methods';
 
-// import { METHOD_ENDPOINTS, CUSTOM_METHODS} from './methods';
+export async function runCli(app: App, argv: string[]): Promise<number> {
+  try {
+    const args = parseCliArgs(argv);
 
-// type Handler = (app: App, args: CliArgs) => Promise<void>;
+    const result = isCustomMethod(args.method)
+      ? await customMethodsController(app, args)
+      : await rawMethodsController(app, args);
 
-// const companyOvervew: Handler = async (app, { inns }) => {
-//   if (inns.length > MAX_INNS_PER_CALL) {
-//     throw new Error(
-//       `Too many INNs: ${inns.length}.` +
-//         `Inns limit ${MAX_INNS_PER_CALL} for comompany_overiew method exceeded` +
-//         'Use batch_overveiw',
-//     );
-//   }
-//   if (inns.length === 0) {
-//     throw new Error(`Inn should not be empty`);
-//   }
+    console.log(JSON.stringify(result, null, 2));
+    return 0;
+  } catch (err) {
+    app.logger.error(
+      `❌ Error: ${err instanceof Error ? err.message : String(err)}`,
+    );
+    return 1;
+  }
+}
 
-//   for (const inn of inns) {
-//     const label = `INN ${inn}`;
-//     app.logger.info(
-//       `🔍 Calling ${CUSTOM_METHODS.company_overview} for ${label}...`,
-//     );
-//     try {
-//       const result = await app.companyOverview.run(inn);
-//       app.logger.info(JSON.stringify(result, null, 2));
-//     } catch (err) {
-//       app.logger.error(
-//         `❌ Error [${label}]: ` +
-//           (err instanceof Error ? err.message : String(err)),
-//       );
-//     }
-//   }
-// };
-
-// const batchOvervew: Handler = async app => {
-//   const { inputFilePath, outputFilePath, concurrency } = app.config.batch;
-//   await runCompanyOverviewBatch(
-//     app.companyOverview,
-//     app.logger,
-//     inputFilePath,
-//     outputFilePath,
-//     concurrency,
-//   );
-// };
-
-// const handlers: Record<string, Handler> = {
-//   [CUSTOM_METHODS.company_overview]: companyOvervew,
-//   // [CUSTOM_METHODS.batch_overview]: batchOvervew,
-// };
-
-// // const callEndpoints: Handler = async (app, { method, inns, year }) => {
-// //   const endpoint = METHOD_ENDPOINTS[method];
-// //   if (inns.length > MAX_INNS_PER_CALL) {
-// //     throw new Error(
-// //       `Too many INNs: ${inns.length}.` +
-// //         `Inns limit ${MAX_INNS_PER_CALL} for ${method} method exceeded`,
-// //     );
-// //   }
-
-// //   const targets: (string | null)[] = inns.length > 0 ? inns : [null];
-// //   for (const inn of targets) {
-// //     const label = `INN ${inn}`;
-// //     app.logger.info(`🔍 Calling ${method}${inn ? ` for INN ${inn}` : ''}...`);
-// //     try {
-// //       const result = await app.api.get(endpoint, {
-// //         params: {
-// //           ...(inn && { inn }),
-// //           ...(year && { year }),
-// //         },
-// //       });
-// //       app.logger.info('✅ Result: ' + JSON.stringify(result, null, 2));
-// //     } catch (err) {
-// //       app.logger.error(
-// //         `❌ Error [${label}]: ` +
-// //           (err instanceof Error ? err.message : String(err)),
-// //       );
-// //     }
-// //   }
-// // };
-
-// export async function runCli(argv: string[], app: App): Promise<number> {
-//   try {
-//     const args = parseCliArgs(argv);
-//     const handler = handlers[args.method] ?? endpointsHandler;
-//     await handler(app, args);
-//     return 0;
-//   } catch (err) {
-//     app.logger.error(
-//       '❌ Error',
-//       err instanceof Error ? err.message : String(err),
-//     );
-//     return 1;
-//   }
-// }
+function parseCliArgs(argv: string[]): QueryArgs {
+  const get = (prefix: string): string => {
+    const found = argv.find(a => a.startsWith(prefix));
+    return found ? found.slice(prefix.length) : '';
+  };
+  const method = get('--method=');
+  if (!method) {
+    throw new Error(
+      `Missing --method=<name>\nAvailabe: ${ALL_METHODS.join(', \n')}`,
+    );
+  }
+  console.log(ALL_METHODS);
+  const inn = get('--inn=');
+  const year = get('--year=');
+  const args: QueryArgs = { method, inn, year };
+  validateArgs(args, ALL_METHODS);
+  return args;
+}

@@ -11,6 +11,13 @@ export interface OverviewRecord {
   status: string;
 }
 
+export interface BatchSummary {
+  total: number;
+  succeeded: number;
+  failed: number;
+  outputFilePath: string;
+}
+
 export type OverviewResult = Record<string, OverviewRecord>;
 
 export async function runCompanyOverviewBatch(
@@ -19,7 +26,7 @@ export async function runCompanyOverviewBatch(
   inputFilePath: string,
   outputFilePath: string,
   concurrency = 5,
-): Promise<OverviewResult> {
+): Promise<BatchSummary> {
   const inns = inputFileReader(inputFilePath);
   logger.info(`📦 Loaded ${inns.length} INNs from ${inputFilePath}`);
 
@@ -58,9 +65,20 @@ export async function runCompanyOverviewBatch(
     }
   }
   fs.writeFileSync(outputFilePath, JSON.stringify(result, null, 2));
+
+  // Compute summary from the written data
+  const records = Object.values(result);
+  const failed = records.filter(r => r.status.startsWith('ERROR')).length;
+  const summary: BatchSummary = {
+    total: records.length,
+    succeeded: records.length - failed,
+    failed,
+    outputFilePath,
+  };
+
   logger.info(
     `✅ Wrote ${Object.keys(result).length} records to ${outputFilePath}`,
   );
 
-  return result;
+  return summary;
 }

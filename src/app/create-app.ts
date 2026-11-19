@@ -12,7 +12,7 @@ import { CompanyOverviewUseCase } from '../use-cases/company-overview.usecase';
 
 export function createApp() {
   // Infrastructure
-  const logger = new ConsoleLogger()
+  const logger = new ConsoleLogger();
   const cookieFile = path.join(
     process.cwd(),
     'storage',
@@ -24,10 +24,10 @@ export function createApp() {
 
   // Services
   const session = new SessionService(store, logger);
-  const authApiClient = new AuthApiClient(http , {
+  const authApiClient = new AuthApiClient(http, {
     loginPath: config.endpoints.login,
-    logoutPath: config.endpoints.logout
-  })
+    logoutPath: config.endpoints.logout,
+  });
   const auth = new AuthService(authApiClient, store, session, logger, {
     baseURL: config.endpoints.baseURL,
     tokenName: config.auth.tokenName,
@@ -36,13 +36,13 @@ export function createApp() {
   });
   const api = new ApiService(http, auth);
 
-  // Api clients: 
+  // Api clients:
   const company = new CompanyApiClient(api, {
-    getCard: config.endpoints.get_company_card});
+    getCard: config.endpoints.get_company_card,
+  });
 
   // Use cases
   const companyOverview = new CompanyOverviewUseCase(company, logger);
-
 
   return { logger, store, http, session, auth, api, companyOverview };
 }

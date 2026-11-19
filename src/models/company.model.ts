@@ -1,4 +1,3 @@
-
 export const INN_PATTERN = /^\d{10}$|^\d{12}$/;
 export function isValidInn(value: string): boolean {
   return INN_PATTERN.test(value);
@@ -11,6 +10,11 @@ export type CompanyStatusCode =
   | 'reorganizing'
   | 'bunkrupt'
   | 'unknown';
+
+export interface CompanyOverviewResult {
+  shortName: string;
+  status: string;
+}
 
 export interface CompanySatus {
   code: CompanyStatusCode;
