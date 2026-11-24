@@ -37,8 +37,8 @@ export class AuthApiClient {
       this.cfg.loginPath,
       toLoginRequest(credentials),
     );
-    if (isLoginSuccessful(res)) {
-      throw new AuthenticationError('Login faild' + JSON.stringify(res));
+    if (!isLoginSuccessful(res)) {
+      throw new AuthenticationError('Login failed' + JSON.stringify(res));
     }
   }
   async logout(): Promise<void> {
