@@ -2,17 +2,19 @@ import path from 'path';
 import config from '../config';
 import { ToughCookieStore } from '../infrastructure/file-cookie-store';
 import { AxiosHttpClient } from '../infrastructure/axios-http-client';
-import { ConsoleLogger } from '../infrastructure/console-logger';
+// import { ConsoleLogger } from '../infrastructure/console-logger';
 import { SessionService } from '../services/session.service';
 import { AuthService } from '../services/auth.service';
 import { ApiService } from '../services/api.service';
 import { CompanyApiClient } from '../infrastructure/company-api.client';
 import { AuthApiClient } from '../infrastructure/auth-api.client';
 import { CompanyOverviewUseCase } from '../use-cases/company-overview.usecase';
+import { WinstonLogger } from '../infrastructure/winston-logger';
 
 export function createApp() {
   // Infrastructure
-  const logger = new ConsoleLogger();
+  const logDir = path.join(process.cwd(), 'storage', 'logs');
+  const logger = new WinstonLogger(logDir);
   const cookieFile = path.join(
     process.cwd(),
     'storage',
@@ -20,7 +22,7 @@ export function createApp() {
     'session.json',
   );
   const store = new ToughCookieStore(cookieFile);
-  const http = new AxiosHttpClient(config.endpoints.baseURL, store);
+  const http = new AxiosHttpClient(config.endpoints.baseURL, store, logger);
 
   // Services
   const session = new SessionService(store, logger);

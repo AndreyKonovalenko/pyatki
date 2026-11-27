@@ -30,7 +30,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "0.27.2",
+    "axios": "^1.21.1",
     "axios-cookiejar-support": "7.0.0",
     "dotenv": "^17.4.2",
     "express": "^5.3.0",
@@ -39,7 +39,9 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.23.13",
     "typescript": "^5.5.0",
-    "typescript-eslint": "^8.70.0"
+    "typescript-eslint": "^8.70.0",
+    "winston": "^3.19.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "overrides": {
     "tough-cookie": "5.0.0"
